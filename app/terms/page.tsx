@@ -26,7 +26,7 @@ export default function TermsPage() {
         <section className="space-y-2">
           <h2 className="text-lg font-bold text-neutral-900 dark:text-white">1. Service Purpose</h2>
           <p>
-            Mecopying.in is a lightweight internet sharing utility allowing users to save, share, and distribute text snippets and collections.
+            Mecopying.in is a fast, lightweight text and code sharing utility allowing users to create, view, share, edit, and delete text snippets and notes.
           </p>
         </section>
 
@@ -43,16 +43,16 @@ export default function TermsPage() {
         </section>
 
         <section className="space-y-2">
-          <h2 className="text-lg font-bold text-neutral-900 dark:text-white">3. Anonymous Ownership & Retention</h2>
+          <h2 className="text-lg font-bold text-neutral-900 dark:text-white">3. Anonymous Snippet Creation & Password Security</h2>
           <p>
-            Mecopying allows anonymous creation. A private management token is generated and returned to you once upon creation. We store only cryptographic hashes of tokens; therefore, lost management links cannot be recovered. Expired or abandoned content may be pruned in accordance with our retention policy.
+            Mecopying allows anonymous snippet creation without requiring an account. Users may optionally assign a custom URL slug and a private deletion password during creation. We store only salted cryptographic hashes (bcrypt) of deletion passwords; lost passwords cannot be recovered. Snippets with set expiration intervals automatically expire based on server-side retention rules.
           </p>
         </section>
 
         <section className="space-y-2">
-          <h2 className="text-lg font-bold text-neutral-900 dark:text-white">4. Abuse Moderation & Takedowns</h2>
+          <h2 className="text-lg font-bold text-neutral-900 dark:text-white">4. Abuse Moderation & Contact</h2>
           <p>
-            We reserve the right to remove any snippet or collection that violates this policy immediately without notice. Anyone can report abuse via our built-in report button or by contacting us.
+            We reserve the right to remove any snippet that violates this policy immediately without notice. Anyone can report abuse via the built-in &ldquo;Report content&rdquo; flag button on any snippet page or by emailing us directly at <a href="mailto:srishanthreddyy05@gmail.com" className="font-mono text-neutral-900 dark:text-white underline">srishanthreddyy05@gmail.com</a>.
           </p>
         </section>
       </div>

@@ -1,13 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { Code2, ShieldCheck, Heart, PlusCircle, Sparkles } from "lucide-react";
+import { ShieldCheck, Heart } from "lucide-react";
 
 export default function Footer() {
   return (
     <footer className="border-t border-neutral-200 dark:border-neutral-800 bg-white/50 dark:bg-neutral-950/50 mt-auto py-12 transition-colors">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
           {/* Brand Info */}
           <div className="md:col-span-2 space-y-3">
             <div className="flex items-center gap-2">
@@ -25,42 +25,6 @@ export default function Footer() {
               <span className="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
               <span>All systems operational • Zero sign-up required</span>
             </div>
-          </div>
-
-          {/* Snippet Features Column */}
-          <div>
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-neutral-900 dark:text-white mb-3">
-              Snippet Features
-            </h4>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link
-                  href="/#create"
-                  className="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition flex items-center gap-1.5"
-                >
-                  <PlusCircle className="w-3.5 h-3.5 text-neutral-400" />
-                  Quick Snippet Creator
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/"
-                  className="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition flex items-center gap-1.5"
-                >
-                  <Code2 className="w-3.5 h-3.5 text-neutral-400" />
-                  Code Sharing & Collections
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/#features"
-                  className="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition flex items-center gap-1.5"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-neutral-400" />
-                  Password Protection & Edit
-                </Link>
-              </li>
-            </ul>
           </div>
 
           {/* Legal & Safety Column */}

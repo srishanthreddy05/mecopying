@@ -1,19 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { Code2, Menu, X, PlusCircle, Sparkles } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { PlusCircle } from "lucide-react";
 
 export default function Navbar() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const pathname = usePathname();
-
-  const navLinks = [
-    { href: "/", label: "Snippets", icon: Code2, active: pathname === "/" },
-    { href: "/#create", label: "New Snippet", icon: PlusCircle, active: false },
-  ];
-
   return (
     <header className="sticky top-0 z-50 backdrop-blur-md bg-white/80 dark:bg-neutral-950/80 border-b border-neutral-200 dark:border-neutral-800 transition-colors">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
@@ -29,29 +19,8 @@ export default function Navbar() {
           </div>
         </Link>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-1 bg-neutral-100/70 dark:bg-neutral-900/70 p-1 rounded-full border border-neutral-200/60 dark:border-neutral-800">
-          {navLinks.map((link) => {
-            const Icon = link.icon;
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-medium transition-all ${
-                  link.active
-                    ? "bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white shadow-sm"
-                    : "text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-neutral-800/50"
-                }`}
-              >
-                <Icon className="w-4 h-4" />
-                {link.label}
-              </Link>
-            );
-          })}
-        </nav>
-
         {/* Action Button */}
-        <div className="hidden md:flex items-center gap-3">
+        <div className="flex items-center gap-3">
           <Link
             href="/#create"
             className="flex items-center gap-2 px-4 py-2 rounded-xl bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 text-sm font-semibold hover:bg-neutral-800 dark:hover:bg-neutral-100 active:scale-98 transition shadow-sm"
@@ -60,59 +29,7 @@ export default function Navbar() {
             <span>Create something</span>
           </Link>
         </div>
-
-        {/* Mobile Hamburger Button */}
-        <div className="flex md:hidden items-center gap-2">
-          <Link
-            href="/#create"
-            className="p-2 rounded-lg bg-[#ccff00] text-neutral-950 text-sm font-bold active:scale-95 transition"
-            aria-label="Create something"
-          >
-            <PlusCircle className="w-5 h-5" />
-          </Link>
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-lg text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
-            aria-label="Toggle menu"
-          >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
-        </div>
       </div>
-
-      {/* Mobile Dropdown Menu */}
-      {mobileMenuOpen && (
-        <div className="md:hidden border-b border-neutral-200 dark:border-neutral-800 bg-white/95 dark:bg-neutral-950/95 backdrop-blur-md px-4 pt-2 pb-6 space-y-2 animate-in fade-in slide-in-from-top-2">
-          {navLinks.map((link) => {
-            const Icon = link.icon;
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition ${
-                  link.active
-                    ? "bg-neutral-100 dark:bg-neutral-900 text-neutral-900 dark:text-white"
-                    : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-900"
-                }`}
-              >
-                <Icon className="w-4 h-4 text-neutral-500" />
-                {link.label}
-              </Link>
-            );
-          })}
-          <div className="pt-2">
-            <Link
-              href="/#create"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 text-sm font-semibold shadow-sm"
-            >
-              <Sparkles className="w-4 h-4 text-[#ccff00] dark:text-neutral-950" />
-              Create something
-            </Link>
-          </div>
-        </div>
-      )}
     </header>
   );
 }

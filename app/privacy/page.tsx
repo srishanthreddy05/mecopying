@@ -31,24 +31,30 @@ export default function PrivacyPage() {
         </section>
 
         <section className="space-y-2">
-          <h2 className="text-lg font-bold text-neutral-900 dark:text-white">2. Cryptographic Storage of Tokens</h2>
+          <h2 className="text-lg font-bold text-neutral-900 dark:text-white">2. Cryptographic Password Protection</h2>
           <p>
-            When you create an anonymous collection or snippet, our server generates a high-entropy secret token. Only the irreversible SHA-256 hash is stored in our database. We never possess plaintext access to your management links.
+            When you create a snippet with an optional deletion password, the password is cryptographically hashed and salted using bcrypt before being stored. Plaintext passwords are never saved, transmitted in page code, or logged.
           </p>
         </section>
 
         <section className="space-y-2">
-          <h2 className="text-lg font-bold text-neutral-900 dark:text-white">3. Public vs Unlisted Content</h2>
+          <h2 className="text-lg font-bold text-neutral-900 dark:text-white">3. Access Control & Visibility</h2>
           <p>
-            <strong>Public Content:</strong> Displayed on your public collection namespace and eligible for indexing.<br />
-            <strong>Unlisted Content:</strong> Configured with <code className="font-mono text-xs">noindex</code> search engine headers and hidden from collection listings. Note that anyone who possesses the exact link may still view it.
+            Snippets are shared via direct URLs (custom or randomly generated). Anyone with the URL can view the snippet content. Mecopying does not track users or sell user data.
           </p>
         </section>
 
         <section className="space-y-2">
           <h2 className="text-lg font-bold text-neutral-900 dark:text-white">4. Expiration Enforcement</h2>
           <p>
-            When a resource reaches its optional expiration timestamp, it is immediately rendered inaccessible by server-side query filters, even before physical database cleanup runs.
+            When a snippet reaches its selected expiration time (1 hour, 24 hours, 7 days, 30 days), it is immediately rendered inaccessible by server-side query filters.
+          </p>
+        </section>
+
+        <section className="space-y-2">
+          <h2 className="text-lg font-bold text-neutral-900 dark:text-white">5. Privacy Inquiries</h2>
+          <p>
+            For any privacy inquiries or data removal requests, please contact us at <a href="mailto:srishanthreddyy05@gmail.com" className="font-mono text-neutral-900 dark:text-white underline">srishanthreddyy05@gmail.com</a>.
           </p>
         </section>
       </div>

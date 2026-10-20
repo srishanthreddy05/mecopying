@@ -44,7 +44,9 @@ export default function ContactPage() {
             For general questions, partnerships, or legal inquiries, reach out to our team at:
           </p>
           <div className="p-2.5 rounded-xl bg-neutral-100 dark:bg-neutral-800 font-mono text-xs text-neutral-800 dark:text-neutral-200">
-            abuse@mecopying.in
+            <a href="mailto:srishanthreddyy05@gmail.com" className="hover:underline text-neutral-900 dark:text-white font-medium">
+              srishanthreddyy05@gmail.com
+            </a>
           </div>
         </div>
       </div>

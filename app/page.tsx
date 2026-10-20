@@ -4,7 +4,6 @@ import {
   Code2,
   Lock,
   Clock,
-  ArrowRight,
   Sparkles,
 } from "lucide-react";
 
@@ -55,14 +54,6 @@ export default function HomePage() {
           >
             <Sparkles className="w-4 h-4 text-neutral-950" />
             <span>Create a snippet</span>
-          </a>
-
-          <a
-            href="#features"
-            className="flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-white dark:bg-neutral-900 hover:bg-neutral-100 dark:hover:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 text-neutral-900 dark:text-white font-semibold text-sm sm:text-base active:scale-98 transition shadow-xs"
-          >
-            <span>Explore features</span>
-            <ArrowRight className="w-4 h-4 text-neutral-400" />
           </a>
         </div>
       </section>
@@ -173,69 +164,42 @@ export default function HomePage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Card 1: Code & Collections */}
-          <div className="p-6 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 flex flex-col justify-between hover:shadow-lg transition">
-            <div>
-              <div className="w-12 h-12 rounded-2xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-5 text-neutral-900 dark:text-white">
-                <Code2 className="w-6 h-6 text-[#65a30d] dark:text-[#ccff00]" />
-              </div>
-              <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-2">
-                Instant Clean Links
-              </h3>
-              <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed mb-6">
-                Share code snippets, notes, or problem sets with optional custom slugs like <code className="font-mono text-xs px-1 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800">/my-notes</code> or random 8-character links.
-              </p>
+          <div className="p-6 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 shadow-xs hover:border-neutral-300 dark:hover:border-neutral-700 transition">
+            <div className="w-12 h-12 rounded-2xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-5 text-neutral-900 dark:text-white">
+              <Code2 className="w-6 h-6 text-[#65a30d] dark:text-[#ccff00]" />
             </div>
-            <a
-              href="#create"
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-neutral-900 dark:text-white hover:text-[#65a30d] dark:hover:text-[#ccff00] transition"
-            >
-              <span>Create snippet</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </a>
+            <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-2">
+              Instant Clean Links
+            </h3>
+            <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">
+              Share code snippets, notes, or problem sets with optional custom slugs like <code className="font-mono text-xs px-1 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800">/my-notes</code> or random 8-character links.
+            </p>
           </div>
 
           {/* Card 2: Password-Protected Edit & Delete */}
-          <div className="p-6 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 flex flex-col justify-between hover:shadow-lg transition">
-            <div>
-              <div className="w-12 h-12 rounded-2xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-5 text-neutral-900 dark:text-white">
-                <Lock className="w-6 h-6 text-[#65a30d] dark:text-[#ccff00]" />
-              </div>
-              <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-2">
-                Password Protection & Edit
-              </h3>
-              <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed mb-6">
-                Set a private deletion password during creation. Use it anytime to update title and code in-place, or permanently delete the page.
-              </p>
+          <div className="p-6 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 shadow-xs hover:border-neutral-300 dark:hover:border-neutral-700 transition">
+            <div className="w-12 h-12 rounded-2xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-5 text-neutral-900 dark:text-white">
+              <Lock className="w-6 h-6 text-[#65a30d] dark:text-[#ccff00]" />
             </div>
-            <a
-              href="#create"
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-neutral-900 dark:text-white hover:text-[#65a30d] dark:hover:text-[#ccff00] transition"
-            >
-              <span>Try password protection</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </a>
+            <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-2">
+              Password Protection & Edit
+            </h3>
+            <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">
+              Set a private deletion password during creation. Use it anytime to update title and code in-place, or permanently delete the page.
+            </p>
           </div>
 
           {/* Card 3: Auto-Expiration */}
-          <div className="p-6 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 flex flex-col justify-between hover:shadow-lg transition">
-            <div>
-              <div className="w-12 h-12 rounded-2xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-5 text-neutral-900 dark:text-white">
-                <Clock className="w-6 h-6 text-[#65a30d] dark:text-[#ccff00]" />
-              </div>
-              <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-2">
-                Timed Auto-Expiration
-              </h3>
-              <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed mb-6">
-                Set snippets to automatically self-destruct after 1 hour, 24 hours, 7 days, or 30 days, or keep them accessible permanently.
-              </p>
+          <div className="p-6 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 shadow-xs hover:border-neutral-300 dark:hover:border-neutral-700 transition">
+            <div className="w-12 h-12 rounded-2xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-5 text-neutral-900 dark:text-white">
+              <Clock className="w-6 h-6 text-[#65a30d] dark:text-[#ccff00]" />
             </div>
-            <a
-              href="#create"
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-neutral-900 dark:text-white hover:text-[#65a30d] dark:hover:text-[#ccff00] transition"
-            >
-              <span>Explore expiry options</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </a>
+            <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-2">
+              Timed Auto-Expiration
+            </h3>
+            <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">
+              Set snippets to automatically self-destruct after 1 hour, 24 hours, 7 days, or 30 days, or keep them accessible permanently.
+            </p>
           </div>
         </div>
       </section>
