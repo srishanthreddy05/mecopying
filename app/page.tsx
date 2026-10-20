@@ -44,7 +44,7 @@ export default function HomePage() {
         </h1>
 
         <p className="mt-5 text-base sm:text-lg md:text-xl text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto leading-relaxed">
-          Save code, share snippets, and publish clean notes with one link. No unnecessary complexity.
+          Save text, share snippets, and send everything through one simple link.
         </p>
 
         {/* CTA Buttons */}
@@ -58,10 +58,10 @@ export default function HomePage() {
           </a>
 
           <a
-            href="#tools"
+            href="#features"
             className="flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-white dark:bg-neutral-900 hover:bg-neutral-100 dark:hover:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 text-neutral-900 dark:text-white font-semibold text-sm sm:text-base active:scale-98 transition shadow-xs"
           >
-            <span>Explore tools</span>
+            <span>Explore features</span>
             <ArrowRight className="w-4 h-4 text-neutral-400" />
           </a>
         </div>
@@ -123,7 +123,7 @@ export default function HomePage() {
                 Share anywhere
               </h3>
               <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">
-                Send the clean URL on Discord, WhatsApp, Slack, or wherever you collaborate with 1 click.
+                Share your link anywhere — WhatsApp, Discord, email, or with friends.
               </p>
             </div>
           </div>

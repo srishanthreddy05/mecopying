@@ -15,7 +15,7 @@ export default function NotFound() {
       </h1>
 
       <p className="text-sm sm:text-base text-neutral-600 dark:text-neutral-400 leading-relaxed max-w-md mx-auto">
-        This snippet, collection, or time capsule might have expired, been deleted by its owner, or you followed a mistyped URL.
+        This snippet or collection might have expired, been deleted by its owner, or you followed a mistyped URL.
       </p>
 
       <div className="flex flex-wrap items-center justify-center gap-3 pt-4">
