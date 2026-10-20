@@ -1,0 +1,79 @@
+// Prisma Schema for Mecopying.in
+// Supports PostgreSQL on Neon with pooling (DATABASE_URL) and direct migration connection (DIRECT_URL)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Collection {
+  id                 String    @id @default(cuid())
+  slug               String    @unique
+  title              String
+  description        String?
+  visibility         String    @default("PUBLIC") // PUBLIC | UNLISTED
+  manageTokenHash    String
+  deletePasswordHash String?
+  expiresAt          DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  snippets Snippet[]
+
+  @@index([slug])
+  @@index([visibility])
+  @@index([expiresAt])
+}
+
+model Snippet {
+  id                 String      @id @default(cuid())
+  collectionId       String
+  collection         Collection  @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  slug               String
+  title              String
+  content            String      @db.Text
+  language           String      @default("plaintext")
+  visibility         String      @default("PUBLIC") // PUBLIC | UNLISTED
+  deletePasswordHash String?
+  viewCount          Int         @default(0)
+  expiresAt          DateTime?
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+
+  @@unique([collectionId, slug])
+  @@index([slug])
+  @@index([visibility])
+  @@index([expiresAt])
+}
+
+model FutureMessage {
+  id              String   @id @default(cuid())
+  slug            String   @unique
+  title           String
+  content         String   @db.Text
+  hint            String?
+  unlockAt        DateTime
+  manageTokenHash String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([slug])
+  @@index([unlockAt])
+}
+
+model Report {
+  id         String   @id @default(cuid())
+  targetType String   // COLLECTION | SNIPPET | FUTURE_MESSAGE
+  targetId   String
+  reason     String
+  details    String?
+  status     String   @default("PENDING")
+  createdAt  DateTime @default(now())
+
+  @@index([targetType, targetId])
+}
