@@ -62,3 +62,14 @@ model Report {
 
   @@index([targetType, targetId])
 }
+
+model Review {
+  id         String   @id @default(cuid())
+  name       String
+  rating     Int      // 1 to 5
+  review     String   @db.Text
+  isApproved Boolean  @default(true)
+  createdAt  DateTime @default(now())
+
+  @@index([isApproved, createdAt])
+}

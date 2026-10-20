@@ -258,6 +258,47 @@ async function runTests() {
   assert(!checkDeletedHtml.includes("Arbitrary plaintext, notes, configs"), "Deleted page content must no longer exist in response");
   console.log("  ✔ Verified deleted page is completely removed and renders Not Found\n");
 
+  // 11. Test Customer Reviews System
+  console.log("TEST 11: Customer Reviews Workflow...");
+  // 11a: Validation failure on invalid inputs
+  const badReviewRes = await fetch(`${BASE_URL}/api/reviews`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name: "",
+      rating: 6,
+      review: "",
+    }),
+  });
+  assert.strictEqual(badReviewRes.status, 400, "Invalid review input must return 400 Bad Request");
+  console.log("  ✔ Invalid review payload correctly rejected with 400 Bad Request");
+
+  // 11b: Valid review creation
+  const validReviewRes = await fetch(`${BASE_URL}/api/reviews`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name: "Jordan Student",
+      rating: 5,
+      review: "Cleanest way to share Python code with classmates! Love the white & lime design.",
+    }),
+  });
+  assert.strictEqual(validReviewRes.status, 201, "Valid review must return 201 Created");
+  const reviewJson = await validReviewRes.json();
+  assert(reviewJson.review?.id, "Created review must return an id");
+  assert.strictEqual(reviewJson.review.rating, 5);
+  console.log("  ✔ Successfully posted customer review (201 Created)");
+
+  // 11c: Fetch published reviews & statistics
+  const getReviewsRes = await fetch(`${BASE_URL}/api/reviews?limit=10`);
+  assert.strictEqual(getReviewsRes.status, 200, "Fetching reviews must return 200 OK");
+  const reviewsData = await getReviewsRes.json();
+  assert(reviewsData.totalCount >= 1, "totalCount must be at least 1");
+  assert(reviewsData.averageRating >= 1 && reviewsData.averageRating <= 5, "averageRating must be between 1 and 5");
+  const foundReview = reviewsData.reviews.find((r) => r.id === reviewJson.review.id);
+  assert(foundReview, "Recently created review must be present in public list");
+  console.log(`  ✔ Public reviews API verified (${reviewsData.totalCount} reviews, avg: ${reviewsData.averageRating} ★)\n`);
+
   console.log("🎉 ALL END-TO-END TESTS PASSED SUCCESSFULLY!");
 }
 

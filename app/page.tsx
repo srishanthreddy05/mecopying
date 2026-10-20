@@ -1,5 +1,6 @@
 import QuickCreateForm from "@/components/QuickCreateForm";
 import CodeViewer from "@/components/CodeViewer";
+import ReviewsSection from "@/components/ReviewsSection";
 import {
   Code2,
   Lock,
@@ -203,6 +204,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Customer Reviews Section */}
+      <ReviewsSection />
     </div>
   );
 }

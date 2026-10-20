@@ -204,3 +204,23 @@ export const editSaveSchema = z.object({
       message: `Content exceeds maximum limit of 50 KB (${MAX_SNIPPET_SIZE_BYTES} bytes)`,
     }),
 });
+
+export const createReviewSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(1, "Name is required")
+    .max(50, "Name must not exceed 50 characters"),
+  rating: z
+    .number({ invalid_type_error: "Rating must be a number" })
+    .int("Rating must be an integer")
+    .min(1, "Rating must be between 1 and 5 stars")
+    .max(5, "Rating must be between 1 and 5 stars"),
+  review: z
+    .string()
+    .trim()
+    .min(1, "Review text is required")
+    .max(500, "Review must not exceed 500 characters"),
+});
+
+export type CreateReviewInput = z.infer<typeof createReviewSchema>;

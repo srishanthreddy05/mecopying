@@ -41,10 +41,20 @@ export interface StoredReport {
   createdAt: string;
 }
 
+export interface StoredReview {
+  id: string;
+  name: string;
+  rating: number;
+  review: string;
+  isApproved: boolean;
+  createdAt: string;
+}
+
 interface DevDatabase {
   collections: Record<string, StoredCollection>;
   snippets: Record<string, StoredSnippet>;
   reports: StoredReport[];
+  reviews: StoredReview[];
 }
 
 function getInitialData(): DevDatabase {
@@ -52,6 +62,7 @@ function getInitialData(): DevDatabase {
     collections: {},
     snippets: {},
     reports: [],
+    reviews: [],
   };
 }
 

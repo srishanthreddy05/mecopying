@@ -14,6 +14,7 @@ import {
   StoredCollection,
   StoredSnippet,
   StoredReport,
+  StoredReview,
 } from "./dev-store";
 
 export interface CreateStandalonePageInput {
@@ -1336,4 +1337,152 @@ export async function createReport(data: {
   db.reports.push(report);
   writeDevDb(db);
   return report;
+}
+
+export interface ReviewItem {
+  id: string;
+  name: string;
+  rating: number;
+  review: string;
+  createdAt: string;
+}
+
+export interface GetReviewsResult {
+  reviews: ReviewItem[];
+  totalCount: number;
+  averageRating: number;
+  hasMore: boolean;
+}
+
+/**
+ * Create a new customer review
+ */
+export async function createReview(data: {
+  name: string;
+  rating: number;
+  review: string;
+}): Promise<ReviewItem> {
+  const cleanName = data.name.trim().slice(0, 50);
+  const cleanReview = data.review.trim().slice(0, 500);
+  const ratingNum = Math.min(5, Math.max(1, Math.round(data.rating)));
+
+  if (isDatabaseConfigured()) {
+    try {
+      const created = await prisma.review.create({
+        data: {
+          name: cleanName,
+          rating: ratingNum,
+          review: cleanReview,
+          isApproved: true,
+        },
+      });
+      return {
+        id: created.id,
+        name: created.name,
+        rating: created.rating,
+        review: created.review,
+        createdAt: created.createdAt.toISOString(),
+      };
+    } catch (e) {
+      console.error("Prisma createReview error, falling back to dev store", e);
+    }
+  }
+
+  const db = readDevDb();
+  if (!db.reviews) db.reviews = [];
+  const item: StoredReview = {
+    id: `rev_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+    name: cleanName,
+    rating: ratingNum,
+    review: cleanReview,
+    isApproved: true,
+    createdAt: new Date().toISOString(),
+  };
+  db.reviews.unshift(item);
+  writeDevDb(db);
+
+  return {
+    id: item.id,
+    name: item.name,
+    rating: item.rating,
+    review: item.review,
+    createdAt: item.createdAt,
+  };
+}
+
+/**
+ * Fetch reviews with pagination and statistics
+ */
+export async function getReviews(params?: {
+  limit?: number;
+  offset?: number;
+}): Promise<GetReviewsResult> {
+  const limit = Math.min(50, Math.max(1, params?.limit || 6));
+  const offset = Math.max(0, params?.offset || 0);
+
+  if (isDatabaseConfigured()) {
+    try {
+      const [totalCount, aggregate, items] = await Promise.all([
+        prisma.review.count({ where: { isApproved: true } }),
+        prisma.review.aggregate({
+          where: { isApproved: true },
+          _avg: { rating: true },
+        }),
+        prisma.review.findMany({
+          where: { isApproved: true },
+          orderBy: { createdAt: "desc" },
+          skip: offset,
+          take: limit + 1,
+        }),
+      ]);
+
+      const hasMore = items.length > limit;
+      const returnedItems = hasMore ? items.slice(0, limit) : items;
+      const rawAvg = aggregate._avg.rating || 0;
+      const averageRating = Number(rawAvg.toFixed(1));
+
+      return {
+        reviews: returnedItems.map((r) => ({
+          id: r.id,
+          name: r.name,
+          rating: r.rating,
+          review: r.review,
+          createdAt: r.createdAt.toISOString(),
+        })),
+        totalCount,
+        averageRating,
+        hasMore,
+      };
+    } catch (e) {
+      console.error("Prisma getReviews error, falling back to dev store", e);
+    }
+  }
+
+  const db = readDevDb();
+  const allReviews = (db.reviews || [])
+    .filter((r) => r.isApproved)
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+  const totalCount = allReviews.length;
+  const avg =
+    totalCount > 0
+      ? Number((allReviews.reduce((sum, r) => sum + r.rating, 0) / totalCount).toFixed(1))
+      : 0;
+
+  const items = allReviews.slice(offset, offset + limit + 1);
+  const hasMore = items.length > limit;
+  const returnedItems = hasMore ? items.slice(0, limit) : items;
+
+  return {
+    reviews: returnedItems.map((r) => ({
+      id: r.id,
+      name: r.name,
+      rating: r.rating,
+      review: r.review,
+      createdAt: r.createdAt,
+    })),
+    totalCount,
+    averageRating: avg,
+    hasMore,
+  };
 }
