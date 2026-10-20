@@ -13,8 +13,6 @@ import {
 } from "lucide-react";
 import type { Metadata } from "next";
 
-export const instant = false;
-
 interface PageProps {
   params: Promise<{
     collection: string;

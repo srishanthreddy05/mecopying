@@ -5,8 +5,6 @@ import { RESERVED_SLUGS, SLUG_REGEX } from "@/lib/validations";
 import MinimalSharedPage from "@/components/MinimalSharedPage";
 import type { Metadata } from "next";
 
-export const instant = false;
-
 interface PageProps {
   params: Promise<{
     collection: string;
