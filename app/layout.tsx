@@ -43,7 +43,11 @@ export const metadata: Metadata = {
     description: "Save code, share snippets, and create clean custom links.",
   },
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      { url: "/icon.png", type: "image/png" },
+      { url: "/favicon.ico" },
+    ],
+    apple: "/apple-icon.png",
   },
 };
 
