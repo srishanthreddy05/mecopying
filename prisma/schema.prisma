@@ -51,24 +51,9 @@ model Snippet {
   @@index([expiresAt])
 }
 
-model FutureMessage {
-  id              String   @id @default(cuid())
-  slug            String   @unique
-  title           String
-  content         String   @db.Text
-  hint            String?
-  unlockAt        DateTime
-  manageTokenHash String
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  @@index([slug])
-  @@index([unlockAt])
-}
-
 model Report {
   id         String   @id @default(cuid())
-  targetType String   // COLLECTION | SNIPPET | FUTURE_MESSAGE
+  targetType String   // COLLECTION | SNIPPET
   targetId   String
   reason     String
   details    String?

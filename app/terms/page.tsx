@@ -26,7 +26,7 @@ export default function TermsPage() {
         <section className="space-y-2">
           <h2 className="text-lg font-bold text-neutral-900 dark:text-white">1. Service Purpose</h2>
           <p>
-            Mecopying.in is a lightweight internet sharing utility allowing users to save and distribute code snippets, collections, time-locked messages, and QR codes.
+            Mecopying.in is a lightweight internet sharing utility allowing users to save, share, and distribute text snippets and collections.
           </p>
         </section>
 
@@ -52,7 +52,7 @@ export default function TermsPage() {
         <section className="space-y-2">
           <h2 className="text-lg font-bold text-neutral-900 dark:text-white">4. Abuse Moderation & Takedowns</h2>
           <p>
-            We reserve the right to remove any snippet, collection, or message that violates this policy immediately without notice. Anyone can report abuse via our built-in report button or by contacting us.
+            We reserve the right to remove any snippet or collection that violates this policy immediately without notice. Anyone can report abuse via our built-in report button or by contacting us.
           </p>
         </section>
       </div>

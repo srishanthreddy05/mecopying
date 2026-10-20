@@ -12,8 +12,6 @@ function AppShellContent({ children }: { children: React.ReactNode }) {
   const isMarketingOrToolPage =
     !pathname ||
     pathname === "/" ||
-    pathname.startsWith("/qr") ||
-    pathname.startsWith("/futureme") ||
     pathname.startsWith("/terms") ||
     pathname.startsWith("/privacy") ||
     pathname.startsWith("/contact") ||

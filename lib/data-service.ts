@@ -13,7 +13,6 @@ import {
   writeDevDb,
   StoredCollection,
   StoredSnippet,
-  StoredFutureMessage,
   StoredReport,
 } from "./dev-store";
 
@@ -44,15 +43,6 @@ export interface CreateSnippetInput {
   visibility: "PUBLIC" | "UNLISTED";
   expiresInSeconds?: number | null;
   manageToken?: string;
-}
-
-export interface FutureMessageInput {
-  slug: string;
-  title: string;
-  content: string;
-  hint?: string;
-  unlockAt: Date;
-  manageToken: string;
 }
 
 function isExpired(expiresAt?: Date | string | null): boolean {
@@ -514,6 +504,278 @@ export async function deleteSnippetWithPassword(collectionSlug: string, snippetS
   }
   writeDevDb(db);
   return { success: true, collectionSlug: colSlug, snippetSlug: snipSlug };
+}
+
+export interface VerifyEditPasswordResult {
+  snippetId: string;
+  slug: string;
+  collectionSlug?: string;
+  snippetSlug?: string;
+  title: string;
+  content: string;
+}
+
+/**
+ * Verify deletion password for editing a standalone page or snippet
+ */
+export async function verifySnippetEditPassword(params: {
+  slug?: string;
+  collectionSlug?: string;
+  snippetSlug?: string;
+  password: string;
+}): Promise<VerifyEditPasswordResult> {
+  const { slug, collectionSlug, snippetSlug, password } = params;
+
+  if (collectionSlug && snippetSlug) {
+    const colSlug = collectionSlug.toLowerCase().trim();
+    const snipSlug = snippetSlug.toLowerCase().trim();
+
+    if (isDatabaseConfigured()) {
+      const snippet = await prisma.snippet.findFirst({
+        where: {
+          slug: snipSlug,
+          collection: { slug: colSlug },
+        },
+        include: {
+          collection: true,
+        },
+      });
+
+      if (!snippet) {
+        throw new NotFoundError("Snippet not found or already deleted");
+      }
+
+      if (isExpired(snippet.expiresAt) || isExpired(snippet.collection.expiresAt)) {
+        throw new NotFoundError("Snippet has expired");
+      }
+
+      const hashToTest = snippet.deletePasswordHash || snippet.collection.deletePasswordHash;
+      if (!hashToTest) {
+        throw new UnauthorizedError("This page does not have a password configured");
+      }
+
+      const isValid = await verifyDeletionPassword(password, hashToTest);
+      if (!isValid) {
+        throw new UnauthorizedError("Incorrect password. Please try again.");
+      }
+
+      return {
+        snippetId: snippet.id,
+        slug: snippet.slug,
+        collectionSlug: colSlug,
+        snippetSlug: snipSlug,
+        title: snippet.title,
+        content: snippet.content,
+      };
+    }
+
+    // Dev store
+    const db = readDevDb();
+    const col = db.collections[colSlug];
+    if (!col || isExpired(col.expiresAt)) {
+      throw new NotFoundError("Snippet not found or already deleted");
+    }
+
+    const snipEntry = Object.entries(db.snippets).find(
+      ([, s]) => s.collectionId === col.id && s.slug === snipSlug
+    );
+    if (!snipEntry || isExpired(snipEntry[1].expiresAt)) {
+      throw new NotFoundError("Snippet not found or already deleted");
+    }
+
+    const snippet = snipEntry[1];
+    const hashToTest = snippet.deletePasswordHash || col.deletePasswordHash;
+    if (!hashToTest) {
+      throw new UnauthorizedError("This page does not have a password configured");
+    }
+
+    const isValid = await verifyDeletionPassword(password, hashToTest);
+    if (!isValid) {
+      throw new UnauthorizedError("Incorrect password. Please try again.");
+    }
+
+    return {
+      snippetId: snippet.id,
+      slug: snippet.slug,
+      collectionSlug: colSlug,
+      snippetSlug: snipSlug,
+      title: snippet.title,
+      content: snippet.content,
+    };
+  }
+
+  // Standalone page
+  if (!slug) {
+    throw new Error("Page slug is required");
+  }
+
+  const normSlug = slug.toLowerCase().trim();
+
+  if (isDatabaseConfigured()) {
+    const collection = await prisma.collection.findUnique({
+      where: { slug: normSlug },
+      include: {
+        snippets: {
+          orderBy: { createdAt: "asc" },
+        },
+      },
+    });
+
+    if (!collection) {
+      throw new NotFoundError("Page not found or already deleted");
+    }
+
+    if (isExpired(collection.expiresAt)) {
+      throw new NotFoundError("Page has expired");
+    }
+
+    if (collection.snippets.length === 0) {
+      throw new NotFoundError("Page content not found");
+    }
+
+    const primarySnippet = collection.snippets[0];
+    const hashToTest = collection.deletePasswordHash || primarySnippet.deletePasswordHash;
+    if (!hashToTest) {
+      throw new UnauthorizedError("This page does not have a password configured");
+    }
+
+    const isValid = await verifyDeletionPassword(password, hashToTest);
+    if (!isValid) {
+      throw new UnauthorizedError("Incorrect password. Please try again.");
+    }
+
+    const displayTitle = primarySnippet.title || (collection.title !== collection.slug ? collection.title : "");
+
+    return {
+      snippetId: primarySnippet.id,
+      slug: collection.slug,
+      title: displayTitle,
+      content: primarySnippet.content,
+    };
+  }
+
+  // Dev store
+  const db = readDevDb();
+  const col = db.collections[normSlug];
+  if (!col || isExpired(col.expiresAt)) {
+    throw new NotFoundError("Page not found or already deleted");
+  }
+
+  const colSnippets = Object.values(db.snippets)
+    .filter((s) => s.collectionId === col.id)
+    .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+
+  if (colSnippets.length === 0) {
+    throw new NotFoundError("Page content not found");
+  }
+
+  const primary = colSnippets[0];
+  const hashToTest = col.deletePasswordHash || primary.deletePasswordHash;
+  if (!hashToTest) {
+    throw new UnauthorizedError("This page does not have a password configured");
+  }
+
+  const isValid = await verifyDeletionPassword(password, hashToTest);
+  if (!isValid) {
+    throw new UnauthorizedError("Incorrect password. Please try again.");
+  }
+
+  const displayTitle = primary.title || (col.title !== col.slug ? col.title : "");
+
+  return {
+    snippetId: primary.id,
+    slug: col.slug,
+    title: displayTitle,
+    content: primary.content,
+  };
+}
+
+/**
+ * Update snippet title and content securely
+ */
+export async function updateSnippetContent(params: {
+  snippetId: string;
+  title?: string;
+  content: string;
+}): Promise<{ id: string; title: string; content: string; updatedAt: Date }> {
+  const { snippetId, title, content } = params;
+  const cleanTitle = (title || "").trim();
+
+  if (isDatabaseConfigured()) {
+    const existing = await prisma.snippet.findUnique({
+      where: { id: snippetId },
+      include: { collection: true },
+    });
+
+    if (!existing) {
+      throw new NotFoundError("Snippet not found");
+    }
+
+    if (isExpired(existing.expiresAt) || isExpired(existing.collection.expiresAt)) {
+      throw new NotFoundError("Snippet has expired");
+    }
+
+    const updated = await prisma.$transaction(async (tx) => {
+      if (
+        existing.collection.title === existing.title ||
+        existing.collection.title === existing.collection.slug
+      ) {
+        if (cleanTitle) {
+          await tx.collection.update({
+            where: { id: existing.collectionId },
+            data: { title: cleanTitle },
+          });
+        }
+      }
+
+      return await tx.snippet.update({
+        where: { id: snippetId },
+        data: {
+          title: cleanTitle,
+          content,
+          updatedAt: new Date(),
+        },
+      });
+    });
+
+    return {
+      id: updated.id,
+      title: updated.title,
+      content: updated.content,
+      updatedAt: updated.updatedAt,
+    };
+  }
+
+  // Dev DB
+  const db = readDevDb();
+  const snip = db.snippets[snippetId];
+  if (!snip) {
+    throw new NotFoundError("Snippet not found");
+  }
+
+  const col = Object.values(db.collections).find((c) => c.id === snip.collectionId);
+  if (!col || isExpired(col.expiresAt) || isExpired(snip.expiresAt)) {
+    throw new NotFoundError("Snippet not found or expired");
+  }
+
+  snip.title = cleanTitle;
+  snip.content = content;
+  snip.updatedAt = new Date().toISOString();
+
+  if (col.title === col.slug || col.title === cleanTitle) {
+    if (cleanTitle) {
+      col.title = cleanTitle;
+    }
+  }
+
+  writeDevDb(db);
+
+  return {
+    id: snip.id,
+    title: snip.title,
+    content: snip.content,
+    updatedAt: new Date(snip.updatedAt),
+  };
 }
 
 /**
@@ -1038,149 +1300,10 @@ export async function deleteCollection(collectionSlug: string, manageToken: stri
 }
 
 /**
- * FutureMe: Create a time-locked message
- */
-export async function createFutureMessage(input: FutureMessageInput) {
-  const slug = input.slug.toLowerCase();
-  const manageTokenHash = hashToken(input.manageToken);
-
-  if (isDatabaseConfigured()) {
-    try {
-      const msg = await prisma.futureMessage.create({
-        data: {
-          slug,
-          title: input.title,
-          content: input.content,
-          hint: input.hint || null,
-          unlockAt: input.unlockAt,
-          manageTokenHash,
-        },
-      });
-      return msg;
-    } catch (err: unknown) {
-      if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === "P2002") {
-        throw new DuplicateSlugError("FutureMe link slug is already taken. Try again.");
-      }
-      throw err;
-    }
-  }
-
-  const db = readDevDb();
-  if (db.futureMessages[slug]) {
-    throw new DuplicateSlugError("FutureMe link slug is already taken. Try again.");
-  }
-
-  const msgId = `fut_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
-  const storedMsg: StoredFutureMessage = {
-    id: msgId,
-    slug,
-    title: input.title,
-    content: input.content,
-    hint: input.hint || null,
-    unlockAt: input.unlockAt.toISOString(),
-    manageTokenHash,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
-  db.futureMessages[slug] = storedMsg;
-  writeDevDb(db);
-
-  return {
-    ...storedMsg,
-    unlockAt: new Date(storedMsg.unlockAt),
-    createdAt: new Date(storedMsg.createdAt),
-    updatedAt: new Date(storedMsg.updatedAt),
-  };
-}
-
-/**
- * FutureMe: Get message with strict time-lock enforcement
- * CRITICAL: The message content MUST NOT be returned if current time < unlockAt!
- */
-export async function getFutureMessage(slug: string) {
-  const normSlug = slug.toLowerCase();
-
-  let messageRecord: {
-    id: string;
-    slug: string;
-    title: string;
-    content: string;
-    hint: string | null;
-    unlockAt: Date;
-    createdAt: Date;
-  } | null = null;
-
-  if (isDatabaseConfigured()) {
-    try {
-      messageRecord = await prisma.futureMessage.findUnique({
-        where: { slug: normSlug },
-        select: {
-          id: true,
-          slug: true,
-          title: true,
-          content: true,
-          hint: true,
-          unlockAt: true,
-          createdAt: true,
-        },
-      });
-    } catch {
-      // Fallback
-    }
-  }
-
-  if (!messageRecord) {
-    const db = readDevDb();
-    const mem = db.futureMessages[normSlug];
-    if (mem) {
-      messageRecord = {
-        id: mem.id,
-        slug: mem.slug,
-        title: mem.title,
-        content: mem.content,
-        hint: mem.hint || null,
-        unlockAt: new Date(mem.unlockAt),
-        createdAt: new Date(mem.createdAt),
-      };
-    }
-  }
-
-  if (!messageRecord) return null;
-
-  const now = Date.now();
-  const unlockTime = new Date(messageRecord.unlockAt).getTime();
-  const isLocked = now < unlockTime;
-
-  if (isLocked) {
-    return {
-      id: messageRecord.id,
-      slug: messageRecord.slug,
-      title: messageRecord.title,
-      hint: messageRecord.hint,
-      unlockAt: messageRecord.unlockAt,
-      createdAt: messageRecord.createdAt,
-      isLocked: true,
-      content: null,
-    };
-  }
-
-  return {
-    id: messageRecord.id,
-    slug: messageRecord.slug,
-    title: messageRecord.title,
-    hint: messageRecord.hint,
-    unlockAt: messageRecord.unlockAt,
-    createdAt: messageRecord.createdAt,
-    isLocked: false,
-    content: messageRecord.content,
-  };
-}
-
-/**
  * Report abuse / inappropriate content
  */
 export async function createReport(data: {
-  targetType: "COLLECTION" | "SNIPPET" | "FUTURE_MESSAGE";
+  targetType: "COLLECTION" | "SNIPPET";
   targetId: string;
   reason: string;
   details?: string;

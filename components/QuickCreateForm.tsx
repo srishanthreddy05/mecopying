@@ -8,7 +8,6 @@ import {
   Check,
   Copy,
   ExternalLink,
-  QrCode,
   Lock,
   Eye,
   EyeOff,
@@ -236,15 +235,6 @@ export default function QuickCreateForm() {
               >
                 <span>Open page</span>
                 <ExternalLink className="w-3.5 h-3.5 text-neutral-400" />
-              </Link>
-
-              <Link
-                href={`/qr?url=${encodeURIComponent(createdResult.fullUrl)}`}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-white font-medium text-xs transition"
-                title="Get QR code for this link"
-              >
-                <QrCode className="w-3.5 h-3.5 text-[#ccff00]" />
-                <span className="hidden sm:inline">QR Code</span>
               </Link>
             </div>
           </div>

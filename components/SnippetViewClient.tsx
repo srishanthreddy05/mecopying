@@ -2,13 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { formatDisplayDate } from "@/lib/validations";
 import CodeViewer from "@/components/CodeViewer";
 import ReportModal from "@/components/ReportModal";
 import {
   ChevronRight,
-  QrCode,
   EyeOff,
   Globe,
   Flag,
@@ -41,15 +39,12 @@ interface Props {
 }
 
 export default function SnippetViewClient({ snippet }: Props) {
-  const router = useRouter();
   const [copiedLink, setCopiedLink] = useState(false);
   const [isReportOpen, setIsReportOpen] = useState(false);
   const linesCount = snippet.content.split("\n").length;
   const byteSize = new TextEncoder().encode(snippet.content).length;
   const sizeFormatted =
     byteSize < 1024 ? `${byteSize} B` : `${(byteSize / 1024).toFixed(1)} KB`;
-
-  const snippetPath = `/${snippet.collection.slug}/${snippet.slug}`;
 
   const handleCopyLink = async () => {
     try {
@@ -59,12 +54,6 @@ export default function SnippetViewClient({ snippet }: Props) {
     } catch {
       // fallback
     }
-  };
-
-  const handleOpenQr = (e: React.MouseEvent) => {
-    e.preventDefault();
-    const fullUrl = `${window.location.origin}${snippetPath}`;
-    router.push(`/qr?url=${encodeURIComponent(fullUrl)}`);
   };
 
   return (
@@ -135,15 +124,6 @@ export default function SnippetViewClient({ snippet }: Props) {
             {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
             <span>{copiedLink ? "Link Copied!" : "Copy Link"}</span>
           </button>
-
-          <Link
-            href={`/qr?url=${encodeURIComponent(`https://mecopying.in${snippetPath}`)}`}
-            onClick={handleOpenQr}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#ccff00] hover:bg-[#b8e600] text-neutral-950 text-xs font-bold transition active:scale-95 shadow-sm"
-          >
-            <QrCode className="w-3.5 h-3.5" />
-            <span>QR Code</span>
-          </Link>
         </div>
       </div>
 

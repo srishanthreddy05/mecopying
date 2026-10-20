@@ -1,9 +1,8 @@
-import Link from "next/link";
 import QuickCreateForm from "@/components/QuickCreateForm";
 import CodeViewer from "@/components/CodeViewer";
 import {
   Code2,
-  QrCode,
+  Lock,
   Clock,
   ArrowRight,
   Sparkles,
@@ -23,8 +22,9 @@ function binarySearch(arr: number[], target: number): number {
   return -1;
 }
 
-// Instant test
-console.log(binarySearch([10, 20, 30, 40, 50], 30)); // 2`;
+// Mecopying preserves exact whitespace, tabs, and indentation!
+console.log(binarySearch([1, 3, 5, 7, 9, 11], 7)); // -> 3
+console.log(binarySearch([10, 20, 30, 40, 50], 30)); // -> 2`;
 
 export default function HomePage() {
   return (
@@ -44,7 +44,7 @@ export default function HomePage() {
         </h1>
 
         <p className="mt-5 text-base sm:text-lg md:text-xl text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto leading-relaxed">
-          Save code, share snippets, and turn links into QR codes. No unnecessary complexity.
+          Save code, share snippets, and publish clean notes with one link. No unnecessary complexity.
         </p>
 
         {/* CTA Buttons */}
@@ -123,7 +123,7 @@ export default function HomePage() {
                 Share anywhere
               </h3>
               <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">
-                Send the clean URL on Discord, WhatsApp, or convert it to an instant printable QR code with 1 click.
+                Send the clean URL on Discord, WhatsApp, Slack, or wherever you collaborate with 1 click.
               </p>
             </div>
           </div>
@@ -157,32 +157,32 @@ export default function HomePage() {
         />
       </section>
 
-      {/* Tool Cards Section */}
-      <section id="tools" className="w-full py-16 px-4 sm:px-6 max-w-6xl mx-auto scroll-mt-20">
+      {/* Feature Cards Section */}
+      <section id="features" className="w-full py-16 px-4 sm:px-6 max-w-6xl mx-auto scroll-mt-20">
         <div className="text-center max-w-xl mx-auto mb-12">
           <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#65a30d] dark:text-[#ccff00]">
-            The Mecopying Suite
+            The Mecopying Platform
           </span>
           <h2 className="text-2xl sm:text-3xl font-black text-neutral-900 dark:text-white mt-1">
-            Tools built for speed
+            Built for friction-free sharing
           </h2>
           <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-2">
-            No signup walls. No bloated enterprise dashboards. Just fast internet utilities.
+            No signup walls. No bloated enterprise dashboards. Just fast, secure snippet sharing.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Card 1: Code Sharing */}
+          {/* Card 1: Code & Collections */}
           <div className="p-6 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 flex flex-col justify-between hover:shadow-lg transition">
             <div>
               <div className="w-12 h-12 rounded-2xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-5 text-neutral-900 dark:text-white">
                 <Code2 className="w-6 h-6 text-[#65a30d] dark:text-[#ccff00]" />
               </div>
               <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-2">
-                Code & Collections
+                Instant Clean Links
               </h3>
               <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed mb-6">
-                Group problem sets, lab exercises, or project snippets under neat namespaces with instant syntax highlighting and private management links.
+                Share code snippets, notes, or problem sets with optional custom slugs like <code className="font-mono text-xs px-1 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800">/my-notes</code> or random 8-character links.
               </p>
             </div>
             <a
@@ -194,48 +194,48 @@ export default function HomePage() {
             </a>
           </div>
 
-          {/* Card 2: QR Me */}
+          {/* Card 2: Password-Protected Edit & Delete */}
           <div className="p-6 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 flex flex-col justify-between hover:shadow-lg transition">
             <div>
               <div className="w-12 h-12 rounded-2xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-5 text-neutral-900 dark:text-white">
-                <QrCode className="w-6 h-6 text-[#65a30d] dark:text-[#ccff00]" />
+                <Lock className="w-6 h-6 text-[#65a30d] dark:text-[#ccff00]" />
               </div>
               <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-2">
-                QR Me
+                Password Protection & Edit
               </h3>
               <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed mb-6">
-                Generate high-resolution, downloadable QR codes for any URL. Custom sizes, instant browser rendering, and PNG export.
+                Set a private deletion password during creation. Use it anytime to update title and code in-place, or permanently delete the page.
               </p>
             </div>
-            <Link
-              href="/qr"
+            <a
+              href="#create"
               className="inline-flex items-center gap-1.5 text-xs font-bold text-neutral-900 dark:text-white hover:text-[#65a30d] dark:hover:text-[#ccff00] transition"
             >
-              <span>Open QR Generator</span>
+              <span>Try password protection</span>
               <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+            </a>
           </div>
 
-          {/* Card 3: FutureMe */}
+          {/* Card 3: Auto-Expiration */}
           <div className="p-6 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 flex flex-col justify-between hover:shadow-lg transition">
             <div>
               <div className="w-12 h-12 rounded-2xl bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mb-5 text-neutral-900 dark:text-white">
                 <Clock className="w-6 h-6 text-[#65a30d] dark:text-[#ccff00]" />
               </div>
               <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-2">
-                FutureMe
+                Timed Auto-Expiration
               </h3>
               <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed mb-6">
-                Lock messages until a chosen future moment. The server strictly withholds content until the countdown expires.
+                Set snippets to automatically self-destruct after 1 hour, 24 hours, 7 days, or 30 days, or keep them accessible permanently.
               </p>
             </div>
-            <Link
-              href="/futureme"
+            <a
+              href="#create"
               className="inline-flex items-center gap-1.5 text-xs font-bold text-neutral-900 dark:text-white hover:text-[#65a30d] dark:hover:text-[#ccff00] transition"
             >
-              <span>Launch FutureMe</span>
+              <span>Explore expiry options</span>
               <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+            </a>
           </div>
         </div>
       </section>

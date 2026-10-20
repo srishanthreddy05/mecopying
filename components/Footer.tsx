@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Code2, QrCode, Clock, ShieldCheck, Heart } from "lucide-react";
+import { Code2, ShieldCheck, Heart, PlusCircle, Sparkles } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -27,12 +27,21 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Tools Column */}
+          {/* Snippet Features Column */}
           <div>
             <h4 className="text-xs font-semibold uppercase tracking-wider text-neutral-900 dark:text-white mb-3">
-              Tools
+              Snippet Features
             </h4>
             <ul className="space-y-2 text-sm">
+              <li>
+                <Link
+                  href="/#create"
+                  className="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition flex items-center gap-1.5"
+                >
+                  <PlusCircle className="w-3.5 h-3.5 text-neutral-400" />
+                  Quick Snippet Creator
+                </Link>
+              </li>
               <li>
                 <Link
                   href="/"
@@ -44,20 +53,11 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/qr"
+                  href="/#features"
                   className="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition flex items-center gap-1.5"
                 >
-                  <QrCode className="w-3.5 h-3.5 text-neutral-400" />
-                  QR Me Generator
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/futureme"
-                  className="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition flex items-center gap-1.5"
-                >
-                  <Clock className="w-3.5 h-3.5 text-neutral-400" />
-                  FutureMe Time Capsule
+                  <Sparkles className="w-3.5 h-3.5 text-neutral-400" />
+                  Password Protection & Edit
                 </Link>
               </li>
             </ul>

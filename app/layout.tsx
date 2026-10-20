@@ -19,21 +19,19 @@ export const metadata: Metadata = {
     template: "%s | Mecopying",
   },
   description:
-    "A modern, playful sharing platform for students and developers. Save code snippets, organize into collections, generate QR codes, and share via memorable URLs.",
+    "A modern, playful sharing platform for students and developers. Save code snippets, organize into collections, and share via memorable URLs.",
   keywords: [
     "code sharing",
     "pastebin alternative",
     "code snippets",
     "developer tools",
-    "QR generator",
-    "FutureMe",
-    "time locked messages",
     "programming snippets",
+    "code paste",
   ],
   authors: [{ name: "Mecopying" }],
   openGraph: {
     title: "Mecopying — copy it. link it. send it.",
-    description: "Save code, share snippets, and turn links into QR codes. No unnecessary complexity.",
+    description: "Save code, share snippets, and create clean custom links. No unnecessary complexity.",
     url: "https://mecopying.in",
     siteName: "Mecopying",
     locale: "en_US",
@@ -42,7 +40,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Mecopying — copy it. link it. send it.",
-    description: "Save code, share snippets, and turn links into QR codes.",
+    description: "Save code, share snippets, and create clean custom links.",
   },
   icons: {
     icon: "/favicon.ico",

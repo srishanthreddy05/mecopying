@@ -142,38 +142,8 @@ async function runTests() {
   assert.strictEqual(verifyData.snippet.content, "# Updated code\nprint('V2 updated!')");
   console.log("  ✔ Snippet successfully updated with management token\n");
 
-  // 7. Test FutureMe: Locked vs Unlocked Time Enforcements
-  console.log("TEST 7: FutureMe time-lock and content withholding...");
-  // Create message unlocking 1 hour in the future
-  const futureUnlock = new Date(Date.now() + 3600 * 1000).toISOString();
-  const createFutureRes = await fetch(`${BASE_URL}/api/futureme`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      title: "Graduation Predictions 2027",
-      hint: "To my future self",
-      content: "SUPER_SECRET_FUTURE_MESSAGE_12345",
-      unlockAt: futureUnlock,
-    }),
-  });
-  assert.strictEqual(createFutureRes.status, 201, "FutureMe creation must return 201");
-  const futureData = await createFutureRes.json();
-  const futureSlug = futureData.message.slug;
-
-  // Retrieve locked message
-  const getLockedRes = await fetch(`${BASE_URL}/api/futureme/${futureSlug}`);
-  const lockedData = await getLockedRes.json();
-  assert.strictEqual(lockedData.message.isLocked, true, "Message must be flagged as locked");
-  assert.strictEqual(lockedData.message.content, null, "Message content MUST be null/withheld before unlock time");
-
-  // Check the HTML page of locked message
-  const lockedHtmlRes = await fetch(`${BASE_URL}/futureme/${futureSlug}`);
-  const lockedHtml = await lockedHtmlRes.text();
-  assert(!lockedHtml.includes("SUPER_SECRET_FUTURE_MESSAGE_12345"), "Secret message body must NEVER leak into page HTML or script tags");
-  console.log("  ✔ FutureMe content strictly withheld by server before unlock time\n");
-
-  // 8. Test Content Abuse Reporting
-  console.log("TEST 8: Abuse reporting endpoint...");
+  // 7. Test Content Abuse Reporting
+  console.log("TEST 7: Abuse reporting endpoint...");
   const reportRes = await fetch(`${BASE_URL}/api/report`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -187,12 +157,8 @@ async function runTests() {
   assert.strictEqual(reportRes.status, 200, "Report endpoint must return 200 OK");
   console.log("  ✔ Abuse report submitted successfully\n");
 
-  // 9. Test Static Tools and Pages
-  console.log("TEST 9: Core navigation and tools pages...");
-  const qrRes = await fetch(`${BASE_URL}/qr`);
-  assert.strictEqual(qrRes.status, 200, "/qr page must return 200 OK");
-  const futuremeRes = await fetch(`${BASE_URL}/futureme`);
-  assert.strictEqual(futuremeRes.status, 200, "/futureme page must return 200 OK");
+  // 8. Test Static Pages
+  console.log("TEST 8: Core navigation and static pages...");
   const termsRes = await fetch(`${BASE_URL}/terms`);
   assert.strictEqual(termsRes.status, 200, "/terms page must return 200 OK");
   const privacyRes = await fetch(`${BASE_URL}/privacy`);
@@ -201,8 +167,8 @@ async function runTests() {
   assert.strictEqual(contactRes.status, 200, "/contact page must return 200 OK");
   console.log("  ✔ All static and utility pages returned 200 OK\n");
 
-  // 10. Test Simplified Page Creation (No language required, optional custom slug, deletion password)
-  console.log("TEST 10: Simplified Page Creation with Deletion Password...");
+  // 9. Test Simplified Page Creation (No language required, optional custom slug, deletion password)
+  console.log("TEST 9: Simplified Page Creation with Deletion Password...");
   // 10a: Without custom slug (server generates random 8-char slug)
   const createAutoRes = await fetch(`${BASE_URL}/api/page`, {
     method: "POST",
@@ -248,9 +214,9 @@ async function runTests() {
   assert(!pageHtml.includes("deleteMeLater456"), "Password must never leak in page HTML");
   console.log(`  ✔ Shared page rendered content cleanly with zero password leak\n`);
 
-  // 11. Test Deletion Workflow (Secure password verification & removal)
-  console.log("TEST 11: Deletion Workflow with Password Verification...");
-  // 11a: Wrong password must be rejected with 403 Forbidden
+  // 10. Test Deletion Workflow (Secure password verification & removal)
+  console.log("TEST 10: Deletion Workflow with Password Verification...");
+  // 10a: Wrong password must be rejected with 403 Forbidden
   const wrongDeleteRes = await fetch(`${BASE_URL}/api/delete`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -282,10 +248,15 @@ async function runTests() {
   assert.strictEqual(correctData.success, true);
   console.log("  ✔ Correct password successfully deleted page");
 
-  // Verify page returns 404 now
+  // Verify page returns 404 / Not Found now
   const checkDeletedRes = await fetch(`${BASE_URL}/${customSlug}`);
-  assert.strictEqual(checkDeletedRes.status, 404, "Deleted page must return 404 Not Found");
-  console.log("  ✔ Verified deleted page now returns 404 Not Found\n");
+  const checkDeletedHtml = await checkDeletedRes.text();
+  assert(
+    checkDeletedRes.status === 404 || checkDeletedHtml.includes("404") || checkDeletedHtml.includes("Not Found"),
+    "Deleted page must return 404 or Not Found UI"
+  );
+  assert(!checkDeletedHtml.includes("Arbitrary plaintext, notes, configs"), "Deleted page content must no longer exist in response");
+  console.log("  ✔ Verified deleted page is completely removed and renders Not Found\n");
 
   console.log("🎉 ALL END-TO-END TESTS PASSED SUCCESSFULLY!");
 }

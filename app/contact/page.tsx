@@ -30,7 +30,7 @@ export default function ContactPage() {
           </div>
           <h2 className="text-lg font-bold text-neutral-900 dark:text-white">Instant Content Report</h2>
           <p className="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
-            Every snippet and time-locked message includes a direct &ldquo;Report Content&rdquo; flag button at the bottom of its page. Submitting through that button automatically links the URL and flags the content for priority review.
+            Every shared snippet includes a direct &ldquo;Report Content&rdquo; flag button at the bottom of its page. Submitting through that button automatically links the URL and flags the content for priority review.
           </p>
         </div>
 

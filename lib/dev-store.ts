@@ -31,18 +31,6 @@ export interface StoredSnippet {
   updatedAt: string;
 }
 
-export interface StoredFutureMessage {
-  id: string;
-  slug: string;
-  title: string;
-  content: string;
-  hint?: string | null;
-  unlockAt: string;
-  manageTokenHash: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
 export interface StoredReport {
   id: string;
   targetType: string;
@@ -56,7 +44,6 @@ export interface StoredReport {
 interface DevDatabase {
   collections: Record<string, StoredCollection>;
   snippets: Record<string, StoredSnippet>;
-  futureMessages: Record<string, StoredFutureMessage>;
   reports: StoredReport[];
 }
 
@@ -64,7 +51,6 @@ function getInitialData(): DevDatabase {
   return {
     collections: {},
     snippets: {},
-    futureMessages: {},
     reports: [],
   };
 }

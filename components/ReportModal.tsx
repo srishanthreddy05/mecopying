@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Flag, X, Check, AlertTriangle } from "lucide-react";
 
 interface ReportModalProps {
-  targetType: "COLLECTION" | "SNIPPET" | "FUTURE_MESSAGE";
+  targetType: "COLLECTION" | "SNIPPET";
   targetId: string;
   isOpen: boolean;
   onClose: () => void;

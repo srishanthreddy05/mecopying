@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Code2, QrCode, Clock, Menu, X, PlusCircle, Sparkles } from "lucide-react";
+import { Code2, Menu, X, PlusCircle, Sparkles } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 export default function Navbar() {
@@ -10,9 +10,8 @@ export default function Navbar() {
   const pathname = usePathname();
 
   const navLinks = [
-    { href: "/", label: "Code", icon: Code2, active: pathname === "/" },
-    { href: "/qr", label: "QR Me", icon: QrCode, active: pathname.startsWith("/qr") },
-    { href: "/futureme", label: "FutureMe", icon: Clock, active: pathname.startsWith("/futureme") },
+    { href: "/", label: "Snippets", icon: Code2, active: pathname === "/" },
+    { href: "/#create", label: "New Snippet", icon: PlusCircle, active: false },
   ];
 
   return (

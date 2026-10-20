@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { deletePageWithPassword, deleteSnippetWithPassword, NotFoundError, UnauthorizedError } from "@/lib/data-service";
 import { checkRateLimit } from "@/lib/security";
 
@@ -33,6 +34,8 @@ export async function POST(req: NextRequest) {
 
     if (collectionSlug && snippetSlug) {
       await deleteSnippetWithPassword(collectionSlug, snippetSlug, password.trim());
+      revalidatePath(`/${collectionSlug}/${snippetSlug}`);
+      revalidatePath(`/${collectionSlug}`);
       return NextResponse.json({
         success: true,
         message: "Snippet deleted successfully.",
@@ -47,6 +50,7 @@ export async function POST(req: NextRequest) {
     }
 
     await deletePageWithPassword(slug, password.trim());
+    revalidatePath(`/${slug}`);
 
     return NextResponse.json({
       success: true,

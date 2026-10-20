@@ -180,19 +180,27 @@ export const updateSnippetSchema = z.object({
   visibility: z.enum(["PUBLIC", "UNLISTED"]).optional(),
 });
 
-export const createFutureMessageSchema = z.object({
-  title: z.string().trim().min(1, "Title is required").max(100, "Title must not exceed 100 characters"),
-  content: z
-    .string()
-    .min(1, "Message content is required")
-    .max(20000, "Message must not exceed 20,000 characters"),
-  hint: z.string().trim().max(120, "Hint must not exceed 120 characters").optional().or(z.literal("")),
-  unlockAt: z.string().datetime({ message: "Invalid unlock date/time. Must be valid ISO format." }),
-});
-
 export const reportSchema = z.object({
-  targetType: z.enum(["COLLECTION", "SNIPPET", "FUTURE_MESSAGE"]),
+  targetType: z.enum(["COLLECTION", "SNIPPET"]),
   targetId: z.string().min(1),
   reason: z.string().trim().min(3, "Reason must be at least 3 characters").max(200),
   details: z.string().trim().max(1000).optional().or(z.literal("")),
+});
+
+export const editVerifySchema = z.object({
+  slug: z.string().trim().toLowerCase().optional(),
+  collectionSlug: z.string().trim().toLowerCase().optional(),
+  snippetSlug: z.string().trim().toLowerCase().optional(),
+  password: z.string().min(1, "Password is required"),
+});
+
+export const editSaveSchema = z.object({
+  token: z.string().min(1, "Edit authorization token is required"),
+  title: z.string().trim().max(100, "Title must not exceed 100 characters").optional().or(z.literal("")),
+  content: z
+    .string()
+    .min(1, "Content cannot be empty")
+    .refine((val) => new TextEncoder().encode(val).length <= MAX_SNIPPET_SIZE_BYTES, {
+      message: `Content exceeds maximum limit of 50 KB (${MAX_SNIPPET_SIZE_BYTES} bytes)`,
+    }),
 });

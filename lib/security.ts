@@ -129,3 +129,82 @@ export function checkRateLimit(
   record.count += 1;
   return { allowed: true, remaining: limit - record.count, resetAt: record.resetAt };
 }
+
+const EDIT_TOKEN_SECRET =
+  process.env.EDIT_SECRET ||
+  process.env.DATABASE_URL ||
+  "mecopying-internal-edit-secret-key-2026-fallback";
+
+export interface EditTokenPayload {
+  snippetId: string;
+  slug: string;
+  collectionSlug?: string;
+  snippetSlug?: string;
+  expiresInMs?: number;
+}
+
+/**
+ * Creates a cryptographically signed, short-lived edit token tied to a specific snippet.
+ */
+export function createEditToken(payload: EditTokenPayload): string {
+  const exp = Date.now() + (payload.expiresInMs || 15 * 60 * 1000); // 15 min default
+  const data = `${payload.snippetId}:${payload.slug}:${payload.collectionSlug || ""}:${payload.snippetSlug || ""}:${exp}`;
+  const sig = crypto.createHmac("sha256", EDIT_TOKEN_SECRET).update(data).digest("hex");
+  const tokenObj = {
+    snippetId: payload.snippetId,
+    slug: payload.slug,
+    collectionSlug: payload.collectionSlug || null,
+    snippetSlug: payload.snippetSlug || null,
+    exp,
+    sig,
+  };
+  return Buffer.from(JSON.stringify(tokenObj), "utf8").toString("base64url");
+}
+
+/**
+ * Verifies the integrity, signature, and expiration of an edit token.
+ */
+export function verifyEditToken(token: string): {
+  valid: boolean;
+  snippetId?: string;
+  slug?: string;
+  collectionSlug?: string | null;
+  snippetSlug?: string | null;
+  error?: string;
+} {
+  if (!token || typeof token !== "string") {
+    return { valid: false, error: "Missing edit authorization token" };
+  }
+  try {
+    const raw = Buffer.from(token, "base64url").toString("utf8");
+    const parsed = JSON.parse(raw);
+    const { snippetId, slug, collectionSlug, snippetSlug, exp, sig } = parsed;
+
+    if (!snippetId || !slug || !exp || !sig) {
+      return { valid: false, error: "Malformed edit authorization token" };
+    }
+
+    if (Date.now() > exp) {
+      return { valid: false, error: "Edit session has expired. Please verify your password again." };
+    }
+
+    const expectedData = `${snippetId}:${slug}:${collectionSlug || ""}:${snippetSlug || ""}:${exp}`;
+    const expectedSig = crypto.createHmac("sha256", EDIT_TOKEN_SECRET).update(expectedData).digest("hex");
+
+    const sigBuf = Buffer.from(sig, "hex");
+    const expSigBuf = Buffer.from(expectedSig, "hex");
+    if (sigBuf.length !== expSigBuf.length || !crypto.timingSafeEqual(sigBuf, expSigBuf)) {
+      return { valid: false, error: "Invalid edit authorization signature" };
+    }
+
+    return {
+      valid: true,
+      snippetId,
+      slug,
+      collectionSlug,
+      snippetSlug,
+    };
+  } catch {
+    return { valid: false, error: "Invalid edit authorization token" };
+  }
+}
