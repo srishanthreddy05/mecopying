@@ -36,7 +36,7 @@ function AppShellContent({ children }: { children: React.ReactNode }) {
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   return (
-    <Suspense fallback={<main className="flex-1">{children}</main>}>
+    <Suspense fallback={<main className="flex-1" />}>
       <AppShellContent>{children}</AppShellContent>
     </Suspense>
   );
