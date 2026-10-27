@@ -52,9 +52,9 @@ export default function PrivacyPage() {
         </section>
 
         <section className="space-y-2">
-          <h2 className="text-lg font-bold text-neutral-900 dark:text-white">5. Privacy Inquiries</h2>
+          <h2 className="text-lg font-bold text-neutral-900 dark:text-white">5. Data Removal & Privacy Requests</h2>
           <p>
-            For any privacy inquiries or data removal requests, please contact us at <a href="mailto:srishanthreddyy05@gmail.com" className="font-mono text-neutral-900 dark:text-white underline">srishanthreddyy05@gmail.com</a>.
+            For urgent takedowns or data removal requests, use the snippet&apos;s deletion password (if set at creation) or click the &ldquo;Report content&rdquo; flag button on the snippet page for immediate review by our moderation system.
           </p>
         </section>
       </div>

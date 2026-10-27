@@ -50,9 +50,9 @@ export default function TermsPage() {
         </section>
 
         <section className="space-y-2">
-          <h2 className="text-lg font-bold text-neutral-900 dark:text-white">4. Abuse Moderation & Contact</h2>
+          <h2 className="text-lg font-bold text-neutral-900 dark:text-white">4. Abuse Moderation & Reporting</h2>
           <p>
-            We reserve the right to remove any snippet that violates this policy immediately without notice. Anyone can report abuse via the built-in &ldquo;Report content&rdquo; flag button on any snippet page or by emailing us directly at <a href="mailto:srishanthreddyy05@gmail.com" className="font-mono text-neutral-900 dark:text-white underline">srishanthreddyy05@gmail.com</a>.
+            We reserve the right to remove any snippet that violates this policy immediately without notice. Anyone can report abuse directly via the built-in &ldquo;Report content&rdquo; flag button located on any snippet page.
           </p>
         </section>
       </div>

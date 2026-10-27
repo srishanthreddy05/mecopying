@@ -1,4 +1,4 @@
-import { Mail, Flag } from "lucide-react";
+import { Flag, ShieldAlert } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -11,7 +11,7 @@ export default function ContactPage() {
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-20 space-y-8">
       <div className="space-y-2 border-b border-neutral-200 dark:border-neutral-800 pb-6">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-neutral-100 dark:bg-neutral-800 text-xs font-mono">
-          <Mail className="w-3.5 h-3.5" />
+          <Flag className="w-3.5 h-3.5" />
           <span>Support & Abuse Desk</span>
         </div>
         <h1 className="text-3xl sm:text-5xl font-black text-neutral-900 dark:text-white tracking-tight">
@@ -34,20 +34,15 @@ export default function ContactPage() {
           </p>
         </div>
 
-        {/* Card 2: Email Desk */}
+        {/* Card 2: Moderation & Review */}
         <div className="p-6 rounded-3xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 space-y-3 shadow-sm">
-          <div className="w-10 h-10 rounded-2xl bg-[#ccff00]/20 text-neutral-900 dark:text-[#ccff00] flex items-center justify-center">
-            <Mail className="w-5 h-5" />
+          <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+            <ShieldAlert className="w-5 h-5" />
           </div>
-          <h2 className="text-lg font-bold text-neutral-900 dark:text-white">Email Inquiries</h2>
+          <h2 className="text-lg font-bold text-neutral-900 dark:text-white">Takedown Review</h2>
           <p className="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
-            For general questions, partnerships, or legal inquiries, reach out to our team at:
+            Flagged snippets are reviewed promptly. Any content violating our Terms of Service or containing malicious or infringing material is removed without delay.
           </p>
-          <div className="p-2.5 rounded-xl bg-neutral-100 dark:bg-neutral-800 font-mono text-xs text-neutral-800 dark:text-neutral-200">
-            <a href="mailto:srishanthreddyy05@gmail.com" className="hover:underline text-neutral-900 dark:text-white font-medium">
-              srishanthreddyy05@gmail.com
-            </a>
-          </div>
         </div>
       </div>
     </div>
